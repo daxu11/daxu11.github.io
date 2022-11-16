@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>学习历程</title>
+  
+  <subtitle>路漫漫其修远兮，吾将上下而求索！</subtitle>
+  <link href="https://github.com/daxu11/daxu.github.io.git/atom.xml" rel="self"/>
+  
+  <link href="https://github.com/daxu11/daxu.github.io.git/"/>
+  <updated>2022-11-16T08:11:20.063Z</updated>
+  <id>https://github.com/daxu11/daxu.github.io.git/</id>
+  
+  <author>
+    <name>阿旭</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MQ学习笔记</title>
+    <link href="https://github.com/daxu11/daxu.github.io.git/2022/11/16/MQ%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>https://github.com/daxu11/daxu.github.io.git/2022/11/16/MQ%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</id>
+    <published>2022-11-16T05:58:30.000Z</published>
+    <updated>2022-11-16T08:11:20.063Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><p><em><span id="more"></span></em></p><h5 id="1、安装配置RabbitMQ"><a href="#1、安装配置RabbitMQ" class="headerlink" title="1、安装配置RabbitMQ"></a>1、安装配置RabbitMQ</h5><ul><li><p>安装依赖</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install socat -y</span><br></pre></td></tr></table></figure></li><li><p>安装Erlang，因为RabbitMQ是使用Erlang语言开发的，需要依赖Erlang的环境</p><p>erlang-23.0.2-1.el7.x86_64.rpm下载地址： <a href="https://github.com/rabbitmq/erlang-rpm/releases/download/v23.0.2/erlang-23.0.2-1.el7.x86_64.rpm">https://github.com/rabbitmq/erlang-rpm/releases/download/v23.0.2/erlang-23.0.2-1.el7.x86_64.rpm</a> </p><p>首先将erlang-23.0.2-1.el7.x86_64.rpm上传至服务器，然后执行下述命令：</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh erlang-23.0.2-1.el7.x86_64.rpm</span><br></pre></td></tr></table></figure></li><li><p>安装RabbitMQ</p><p>rabbitmq-server-3.8.4-1.el7.noarch.rpm下载地址：</p><p> <a href="https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.8.5/rabbitmq-server-3.8.5-1.el7.noarch.rpm">https://github.com/rabbitmq/rabbitmq-server/releases/download/v3.8.5/rabbitmq-server-3.8.5-1.el7.noarch.rpm</a> </p><p>首先将rabbitmq-server-3.8.4-1.el7.noarch.rpm上传至服务器，然后执行下述命令：</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh rabbitmq-server-3.8.4-1.el7.noarch.rpm</span><br></pre></td></tr></table></figure></li><li><p>启用RabbitMQ的管理插件</p><p>进入到 &#x2F;usr&#x2F;lib&#x2F;rabbitmq&#x2F;lib&#x2F;rabbitmq_server-3.8.5&#x2F;sbin，启动管理插件</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br></pre></td></tr></table></figure></li><li><p>启动RabbitMQ</p><p>进入到 &#x2F;usr&#x2F;lib&#x2F;rabbitmq&#x2F;lib&#x2F;rabbitmq_server-3.8.5&#x2F;sbin，启动RabbitMQ</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl start rabbitmq-server</span><br><span class="line">或者</span><br><span class="line">rabbitmq-server</span><br><span class="line">或者后台启动</span><br><span class="line">rabbitmq-server -detached</span><br></pre></td></tr></table></figure></li><li><p>添加用户</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl add_user root 123456</span><br></pre></td></tr></table></figure></li><li><p>给用户设置标签</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_user_tags root administrator</span><br></pre></td></tr></table></figure><p>用户的标签和权限</p><table><thead><tr><th>tag</th><th>权限</th></tr></thead><tbody><tr><td>(None)</td><td>没有访问management插件的权限</td></tr><tr><td>management</td><td>可以使用消息协议做任何操作的权限，加上：<br />1. 可以使用AMQP协议登录的虚拟主机的权限 <br />2. 查看它们能登录的所有虚拟主机中所有队列、交换器和绑定的权限 <br />3. 查看和关闭它们自己的通道和连接的权限 <br />4. 查看它们能访问的虚拟主机中的全局统计信息，包括其他用户的活动</td></tr><tr><td>policymaker</td><td>所有management标签可以做的，加上： <br />1. 在它们能通过AMQP协议登录的虚拟主机上，查看、创建和删除策略以及虚 拟主机参数的权限</td></tr><tr><td>monitoring</td><td>所有management能做的，加上： <br />1. 列出所有的虚拟主机，包括列出不能使用消息协议访问的虚拟主机的权限 <br />2. 查看其他用户连接和通道的权限 <br />3. 查看节点级别的数据如内存使用和集群的权限 <br />4. 查看真正的全局所有虚拟主机统计数据的权限</td></tr><tr><td>administrator</td><td>所有policymaker和monitoring能做的，加上： <br />1. 创建删除虚拟主机的权限 <br />2. 查看、创建和删除用户的权限 <br />3. 查看、创建和删除权限的权限 <br />4. 关闭其他用户连接的权限</td></tr></tbody></table></li><li><p>给用户设置权限</p><p>给root用户在虚拟主机”&#x2F;“上的配置、写、读的权限</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_permissions root -p / &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;</span><br></pre></td></tr></table></figure></li></ul><h5 id="2、RabbitMQ的常用操作命令"><a href="#2、RabbitMQ的常用操作命令" class="headerlink" title="2、RabbitMQ的常用操作命令"></a>2、RabbitMQ的常用操作命令</h5>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;RabbitMQ&quot;&gt;&lt;a href=&quot;#RabbitMQ&quot; class=&quot;headerlink&quot; title=&quot;RabbitMQ&quot;&gt;&lt;/a&gt;RabbitMQ&lt;/h2&gt;&lt;p&gt;&lt;em&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://github.com/daxu11/daxu.github.io.git/2022/11/16/hello-world/"/>
+    <id>https://github.com/daxu11/daxu.github.io.git/2022/11/16/hello-world/</id>
+    <published>2022-11-16T03:28:24.482Z</published>
+    <updated>2022-11-16T08:12:18.126Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><p><em><span id="more"></span></em></p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;</summary>
+    
+    
+    
+    
+  </entry>
+  
+</feed>
